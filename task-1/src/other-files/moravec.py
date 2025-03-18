@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Read the image
-image = cv2.imread('/home/anshumaan/Development/College/agv-selection-task/task-1/resources/chess.jpg')
+image = cv2.imread('task-1/resources/chess.jpg')
 
 factor = 2
 threshold = 250# Check if the image was successfully loaded

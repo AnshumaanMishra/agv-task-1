@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the data
-cap = cv2.VideoCapture("./resources/task-1-clipped.mp4")
+cap = cv2.VideoCapture("./resourcestask-1-clipped.mp4")
 ret, first_frame = cap.read()
 
 # img = cv2.imread('./resources/chess.jpg')

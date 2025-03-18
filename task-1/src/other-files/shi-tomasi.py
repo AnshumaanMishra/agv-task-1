@@ -2,12 +2,14 @@ import cv2
 import numpy as np
 
 # Read the image
-image = cv2.imread('/home/anshumaan/Development/College/agv-selection-task/task-1/resources/chess.webp')
+# image = cv2.imread('task-1/resources/chess.jpg')
+image = cv2.imread('task-1/resources/chess.webp')
+# image = cv2.imread('task-1/resources/image.png')S
 
 k = 0.04
 
 factor = 3
-threshold = 2000000000
+threshold = 20000
 
 xKernel = np.array([[-1, 0, 1]])
 yKernel = np.array([[-1], [0], [1]])
@@ -24,28 +26,21 @@ cv2.imshow('Grayscale Image', gray_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 # print(*gray_image)
-def allPossibleMatrices(image, row, column):
-    matrices = []
-    for i in range(row - 1, row + factor - 1):
-        for j in range(column - 1, column + factor - 1):
-            # print(i, row, j, column)
-            # print(image[i : i + factor][j : j + factor])
-            matrices.append(image[i : i + factor, j : j + factor])
-    return matrices
 
-def getHarris(Ix, Iy):
+def getshitomasi(Ix, Iy):
     a11 = sum(sum(Ix.dot(Ix)).T)
     a12 = sum(sum(Ix.dot(Iy)).T)
     a21 = a12
     a22 = sum(sum(Iy.dot(Iy)).T)
-    harrisMatrix = np.array([[a11, a12], [a21, a22]])
-    return harrisMatrix
+    shitomasiMatrix = np.array([[a11, a12], [a21, a22]])
+    return shitomasiMatrix
 
-
-def getC(harrisMatrix):
-    determinant = np.linalg.det(harrisMatrix)
-    trace = np.linalg.trace(harrisMatrix)
-    return determinant - k * (trace ** 2)
+def getC(shitomasiMatrix):
+    eigenValues, eigenVectors = np.linalg.eig(shitomasiMatrix)
+    # determinant = np.linalg.det(shitomasiMatrix)
+    # trace = np.linalg.trace(shitomasiMatrix)
+    # print("Eigen Values = ", eigenValues)
+    return min(eigenValues)
 
 def getIxandIy(image, row, column):
     mainMat = image[row : row + factor, column : column + factor]
@@ -63,31 +58,34 @@ def getIxandIy(image, row, column):
             Iy[i][j] = dy
     return (Ix, Iy)
             
-def HarrisCorners(image, row, column):
+def shitomasiCorners(image, row, column):
     Ix, Iy = getIxandIy(image, row, column)
-    harris = getHarris(Ix, Iy)
-    C = getC(harris)
+    shitomasi = getshitomasi(Ix, Iy)
+    C = getC(shitomasi)
     return C > threshold
 
 
 m, n = gray_image.shape
 print(m, n)
 
-corners = []
+def getCorners(gray_image):
+    corners = []
 
-for i in range(factor - 1, m - (factor + factor - 2)):
-    for j in range(factor - 1, n - (factor + factor - 2)):
-        print(f"current-mid : {(i, j)}")
-        if(HarrisCorners(gray_image, i, j)):
-            corners.append((i, j))
+    for i in range(factor - 1, m - (factor + factor - 2)):
+        for j in range(factor - 1, n - (factor + factor - 2)):
+            print(f"current-mid : {(i, j)}")
+            if(shitomasiCorners(gray_image, i, j)):
+                corners.append((i, j))
 
-corners = np.array(corners)
+    return np.array(corners)
+    
 
+def plotCorners(image, corners):
+    for i in corners:
+        cv2.circle(image, (int(i[1]), int(i[0])), 1, (255, 255, 0), -1)
 
-# corners = cv2.goodFeaturesToTrack(gray_image, 128, 0.01, 10)
-# print(*corners, sep="\n")
-for i in corners:
-    cv2.circle(image, (int(i[1]), int(i[0])), 1, (255, 255, 0), -1)
+plotCorners(image, getCorners(gray_image))
+
 output = cv2.resize(image, (0, 0), fx=2.5, fy=2.5)
 
 cv2.imshow("Cornered Image", output)
