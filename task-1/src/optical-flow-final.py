@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture('task-1/resourcestask-1-clipped.mp4')
+cap = cv2.VideoCapture('task-1/resources/task-1-clipped.mp4')
 
 feature_params = dict(maxCorners = 100, qualityLevel = 0.2, minDistance = 1, blockSize = 7)
 

@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "task-6/test_depth.py"]
+CMD ["python", "task-1/src/optical-flow-final.py"]

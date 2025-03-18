@@ -59,6 +59,8 @@ def getLines(prev_frame, frame):
         for i in range(-1, 2):
             for j in range(-1, 2):
                 tempmat1 = prev_frame[x + j - 1: x + j + 2, y + i - 1 : y + i + 2]
+                if(tempmat1.shape != xKernel.shape):
+                    continue
                 # print("Tempmat = ", tempmat1)
                 # print("Tempmat2 = ", tempmat2)
                 # print("Filer2d = ", cv2.filter2D(tempmat1, -1, xKernel))
@@ -100,7 +102,8 @@ def getLines(prev_frame, frame):
         # print("Corners[i] = ", corners[i])
         # if(velocities[0] > corners[i][0][0] or velocities[1] > corners[i][0][1]):
         #     continue
-        corners[i] -= velocities.T * speed
+        if(i < len(corners)):
+            corners[i] -= velocities.T * speed
         # print("Corners[i] = ", corners[i])
     return corners
 
